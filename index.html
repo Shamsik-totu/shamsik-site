@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>shamsik — Дота и кооп</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0b0b;
+    --bg2: #1a1212;
+    --card: #2a1715;
+    --line: #4a2a26;
+    --text: #f6ece8;
+    --mute: #c3a9a2;
+    --pink: #d9372e;
+    --sun: #e8b84a;
+    --ice: #ff7a2f;
+    --glow: rgba(217, 55, 46, 0.4);
+    --radius: 24px;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: radial-gradient(1100px 560px at 85% -8%, rgba(217,55,46,.30), transparent 60%),
+                radial-gradient(800px 480px at -5% 45%, rgba(232,184,74,.10), transparent 60%),
+                var(--bg);
+    color: var(--text);
+    font: 400 17px/1.6 Manrope, system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3 { font-family: Unbounded, Manrope, sans-serif; margin: 0; line-height: 1.1; letter-spacing: -.01em; }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 22px; }
+
+  /* --- Навигация --- */
+  nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 22px 0; position: relative; z-index: 10;
+  }
+  .logo { font: 900 22px Unbounded, sans-serif; display: flex; align-items: center; }
+  .logo i {
+    display: inline-block; width: 12px; height: 12px; border-radius: 50%;
+    background: var(--pink); margin-right: 8px; box-shadow: 0 0 14px var(--pink);
+  }
+  .links { display: flex; gap: 26px; font-weight: 600; color: var(--mute); }
+  .links a { transition: color 0.2s; }
+  .links a:hover { color: var(--text); }
+  .btn {
+    display: inline-block; padding: 14px 26px; border-radius: 999px;
+    font-weight: 800; background: var(--pink); color: #fff;
+    box-shadow: 0 10px 30px var(--glow); transition: 0.15s; border: 2px solid transparent;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn.ghost { background: transparent; border: 2px solid var(--line); color: var(--text); box-shadow: none; }
+  .btn.ghost:hover { border-color: var(--pink); }
+
+  /* --- Главный экран --- */
+  .hero {
+    text-align: center; padding: 80px 0 100px;
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .hero h1 { font-size: clamp(38px, 6vw, 70px); font-weight: 900; margin-bottom: 20px; }
+  .hero h1 span { color: var(--pink); display: block; text-shadow: 0 0 30px var(--glow); }
+  
+  /* Центрируем текст */
+  .hero p { 
+    max-width: 600px; 
+    color: var(--mute); 
+    font-size: 19px; 
+    margin: 0 auto 36px auto; 
+    text-align: center; 
+  }
+  .cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+  /* --- Секции --- */
+  section { padding: 80px 0; position: relative; z-index: 2; }
+  h2 { font-size: clamp(28px, 4vw, 44px); margin-bottom: 14px; text-align: center; }
+  .sub { color: var(--mute); text-align: center; max-width: 560px; margin: 0 auto 40px; }
+
+  /* --- Обо мне --- */
+  .about { background: var(--bg2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 48px; align-items: center; }
+  
+  /* Убрали круг и свечение, оставили просто картинку */
+  .avatar {
+    width: 100%; 
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+  }
+  .avatar img { 
+    width: 100%; 
+    height: auto; 
+    display: block; 
+    border-radius: 16px; /* Немного скруглили углы, чтобы смотрелось аккуратно */
+  }
+  
+  .quotes { display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
+  .q {
+    background: var(--card); padding: 20px; border-radius: 16px;
+    border-left: 3px solid var(--pink); font-size: 18px;
+  }
+  .q b { display: block; color: var(--sun); font: 700 15px Unbounded, sans-serif; margin-bottom: 6px; }
+  .tags { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; justify-content: center; }
+  .tags span {
+    padding: 8px 16px; border-radius: 999px; background: var(--card);
+    border: 1px solid var(--line); font-weight: 600; font-size: 15px;
+  }
+
+  /* --- Расписание --- */
+  .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; }
+  .day {
+    background: var(--card); border: 1px solid var(--line); border-radius: 20px;
+    padding: 18px 14px; text-align: center; transition: 0.2s;
+  }
+  .day:hover { border-color: var(--pink); box-shadow: 0 8px 30px var(--glow); transform: translateY(-4px); }
+  .day h3 { font-size: 15px; color: var(--mute); font-weight: 500; margin-bottom: 10px; }
+  .day p { margin: 0; font-weight: 800; line-height: 1.3; font-size: 15px; }
+  .day small { display: block; color: var(--sun); font-weight: 400; margin-top: 6px; font-size: 13px; }
+  .day.off { opacity: 0.55; }
+
+  /* --- Клипы --- */
+  .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .clip {
+    background: var(--card); border: 1px solid var(--line); border-radius: 22px;
+    overflow: hidden; transition: 0.2s;
+  }
+  .clip:hover { transform: translateY(-6px); border-color: var(--pink); }
+  .thumb { height: 160px; position: relative; }
+  .thumb i {
+    position: absolute; right: 12px; bottom: 12px; background: rgba(0,0,0,.6);
+    color: #fff; font-style: normal; font-weight: 700; font-size: 13px;
+    padding: 3px 9px; border-radius: 8px;
+  }
+  .t1 { background: linear-gradient(135deg, #d9372e, #e8b84a); }
+  .t2 { background: linear-gradient(135deg, #ff7a2f, #7a1f18); }
+  .t3 { background: linear-gradient(135deg, #e8b84a, #8a1c14); }
+  .clip .c { padding: 18px; }
+  .clip h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+  .clip p { margin: 0; color: var(--mute); font-size: 15px; }
+
+  /* --- Подвал --- */
+  .join {
+    text-align: center; background: linear-gradient(160deg, #5c1410, #b3261e);
+    color: #fff; border-radius: 34px; padding: 64px 24px; margin: 20px 0 80px;
+    position: relative; z-index: 2;
+  }
+  .join h2 { margin-bottom: 12px; }
+  .join p { max-width: 48ch; margin: 0 auto 28px; opacity: .9; }
+  .join .btn { background: #fff; color: #2a1412; box-shadow: none; }
+  .join .btn.ghost { background: transparent; color: #fff; border-color: rgba(255,255,255,.5); }
+  footer { text-align: center; color: var(--mute); font-size: 14px; padding-bottom: 40px; position: relative; z-index: 2; }
+
+  /* --- Адаптив --- */
+  @media (max-width: 860px) {
+    .links { display: none; }
+    .about-grid { grid-template-columns: 1fr; text-align: center; }
+    .days { grid-template-columns: repeat(2, 1fr); }
+    .gallery { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav>
+    <a href="#top" class="logo"><i></i><span id="nick"></span></a>
+    <div class="links">
+      <a href="#about">Обо мне</a>
+      <a href="#schedule">Расписание</a>
+      <a href="#clips">Клипы</a>
+    </div>
+    <a href="#join" class="btn">Подписаться</a>
+  </nav>
+</div>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <h1 id="heroTitle"></h1>
+    <p id="heroText"></p>
+    <div class="cta">
+      <a href="#join" class="btn" id="watchBtn">Смотреть стрим</a>
+      <a href="#schedule" class="btn ghost">Когда эфир</a>
+    </div>
+  </div>
+</header>
+
+<section class="about" id="about">
+  <div class="wrap about-grid">
+    <!-- Упрощенный блок аватарки -->
+    <div class="avatar" id="avatarBox"></div>
+    <div>
+      <h2 id="aboutTitle" style="text-align: left;"></h2>
+      <div class="quotes" id="quotes"></div>
+      <div class="tags" id="tags"></div>
+    </div>
+  </div>
+</section>
+
+<section id="schedule">
+  <div class="wrap">
+    <h2>Расписание эфиров</h2>
+    <p class="sub" id="scheduleNote"></p>
+    <div class="days" id="days"></div>
+  </div>
+</section>
+
+<section id="clips" style="padding-top: 0;">
+  <div class="wrap">
+    <h2>Лучшие моменты</h2>
+    <p class="sub">То, что чат пересматривает до сих пор.</p>
+    <div class="gallery" id="clipList"></div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="join" id="join">
+    <h2 id="joinTitle"></h2>
+    <p id="joinText"></p>
+    <div class="cta" id="soc"></div>
+  </div>
+  <footer id="footer"></footer>
+</div>
+
+<script>
+  // =========================================================
+  // НАСТРОЙКИ САЙТА (Меняй только текст в кавычках "...")
+  // =========================================================
+  const SITE = {
+    pageTitle: "shamsik — Дота 2 и кооп",
+    nick: "shamsik",
+    photo: "bloodseeker.jpg", // Напиши сюда имя твоего файла с Бладсикером
+
+    // Главный экран
+    heroTitle: "Играем вместе",
+    heroAccent: "до утра",
+    heroText: "Я shamsik, мне 19. Играю в Доту и разные кооперативные игры. Заходи в чат, без тебя катку не начнём.",
+
+    // Блок "Обо мне"
+    aboutTitle: "Привет, я shamsik",
+    aboutLines: [
+      ["Снайпер", "«Дальность — моё второе имя. Один выстрел, и катка закончена.»"],
+      ["Фантомка", "«Тишина, удар, крит. Вы даже не заметите, как всё закончилось.»"],
+      ["Шейкер", "«Земля трясётся, когда я захожу в игру. Держитесь за стул.»"]
+    ],
+    tags: ["Dota 2", "Кооператив", "Катки с чатом", "Разговорные вечера"],
+
+    // Расписание (День, Что играем, Время)
+    scheduleNote: "Время указано по Москве. Если что-то поменяется, напишу в Telegram заранее.",
+    schedule: [
+      ["Пн", "Dota 2", "20:00"],
+      ["Вт", "Выходной", ""],
+      ["Ср", "Кооп с друзьями", "19:00"],
+      ["Чт", "Дота с чатом", "21:00"],
+      ["Пт", "Выходной", ""],
+      ["Сб", "Большой кооп", "18:00"],
+      ["Вс", "Разговоры", "20:00"]
+    ],
+
+    // Клипы (Название, Подпись, Время, Ссылка)
+    clips: [
+      { title: "Ульт на пятерых", text: "Чат встал с кресел.", time: "0:42", url: "#" },
+      { title: "Рошан в последнюю секунду", text: "Сердце ушло в пятки.", time: "1:15", url: "#" },
+      { title: "Кооп-фейл века", text: "Смеялись все, даже тиммейты.", time: "0:58", url: "#" }
+    ],
+
+    // Кнопки внизу (Оставь пустую строку "", если кнопка не нужна)
+    joinTitle: "Присоединяйся к чату",
+    joinText: "Подпишись, чтобы не пропускать эфиры, и заходи общаться в Discord.",
+    links: {
+      twitch: "https://twitch.tv/", // Вставь свой ник
+      youtube: "",
+      telegram: "https://t.me/",    // Вставь свой ник
+      discord: ""
+    },
+    
+    footer: "© 2026 shamsik. Сделано с любовью к играм."
+  };
+
+  // =========================================================
+  // ЛОГИКА САЙТА (Ниже лучше ничего не трогать)
+  // =========================================================
+  document.addEventListener("DOMContentLoaded", function() {
+    const S = SITE;
+    
+    // Безопасный вывод
+    const esc = (str) => String(str).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    const $ = id => document.getElementById(id);
+
+    // Заголовок и текст
+    document.title = S.pageTitle;
+    $('nick').textContent = S.nick;
+    $('heroTitle').innerHTML = esc(S.heroTitle) + '<span>' + esc(S.heroAccent) + '</span>';
+    $('heroText').textContent = S.heroText;
+    $('aboutTitle').textContent = S.aboutTitle;
+    $('scheduleNote').textContent = S.scheduleNote;
+    $('joinTitle').textContent = S.joinTitle;
+    $('joinText').textContent = S.joinText;
+    $('footer').textContent = S.footer;
+
+    // Аватарка (теперь без кругов и букв, если указана фотография)
+    if (S.photo) {
+      $('avatarBox').innerHTML = '<img src="' + esc(S.photo) + '" alt="' + esc(S.nick) + '">';
+    } else {
+      $('avatarBox').innerHTML = '<div style="font-size:80px;font-weight:900;color:var(--pink)">' + esc(S.nick.charAt(0)) + '</div>';
+    }
+
+    // Цитаты и теги
+    $('quotes').innerHTML = S.aboutLines.map(l => 
+      '<div class="q"><b>' + esc(l[0]) + '</b>' + esc(l[1]) + '</div>'
+    ).join('');
+    
+    $('tags').innerHTML = S.tags.map(t => 
+      '<span>' + esc(t) + '</span>'
+    ).join('');
+
+    // Расписание
+    $('days').innerHTML = S.schedule.map(d => {
+      const off = !d[2];
+      return '<div class="day ' + (off ? 'off' : 'on') + '">' +
+             '<h3>' + esc(d[0]) + '</h3>' +
+             '<p>' + esc(d[1]) + (off ? '' : '<small>' + esc(d[2]) + '</small>') + '</p>' +
+             '</div>';
+    }).join('');
+
+    // Клипы
+    $('clipList').innerHTML = S.clips.map((c, i) => 
+      '<a class="clip" href="' + esc(c.url || '#') + '">' +
+        '<div class="thumb t' + (i % 3 + 1) + '"><i>' + esc(c.time) + '</i></div>' +
+        '<div class="c"><h3>' + esc(c.title) + '</h3><p>' + esc(c.text) + '</p></div>' +
+      '</a>'
+    ).join('');
+
+    // Кнопки соцсетей
+    const names = { twitch: 'Twitch', youtube: 'YouTube', telegram: 'Telegram', discord: 'Discord' };
+    const keys = Object.keys(names).filter(k => S.links[k]);
+    
+    $('soc').innerHTML = keys.map((k, i) => 
+      '<a class="btn' + (i ? ' ghost' : '') + '" href="' + esc(S.links[k]) + '" target="_blank" rel="noopener">' + names[k] + '</a>'
+    ).join('');
+
+    // Главная кнопка "Смотреть стрим" ведет на первую рабочую ссылку из настроек
+    const firstLink = S.links.twitch || S.links.youtube || S.links.telegram || S.links.discord;
+    if (firstLink) $('watchBtn').href = firstLink;
+  });
+</script>
+</body>
+</html>
